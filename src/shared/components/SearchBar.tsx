@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SearchBarProps {
   placeholder: string;
@@ -9,6 +9,18 @@ export const SearchBar = ({
   onSearch,
 }: SearchBarProps) => {
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    // Debounce the search input to avoid excessive calls to onSearch
+    const timeoutId = setTimeout(() => {
+      onSearch(query);
+    }, 700);
+
+    // Cleanup function to reset query when component unmounts
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [query, onSearch]);
 
   const handleSearch = () => {
     onSearch(query);
