@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { GifList } from "./gifs/components/GifList";
 import { PreviousSearches } from "./gifs/components/PreviousSearches";
-import { mockGifs } from "./mock-data/gifs.mock";
 import { CustomHeader } from "./shared/components/CustomHeader";
 import { SearchBar } from "./shared/components/SearchBar";
 import { getGifsByQueryAction } from "./gifs/actions/get-gif-by-query.actions";
+import type { Gif } from "./gifs/interfaces/gif.interface";
 
 export const GifsApp = () => {
   const [previousSearches, setPreviousSearches] = useState<string[]>([]);
+  const [gifs, setGifs] = useState<Gif[]>([]);
 
   // TODO: Implement search functionality and update previous searches
   const handleSearchClick = (searchTerm: string) => {
@@ -29,7 +30,8 @@ export const GifsApp = () => {
       setPreviousSearches((prev) => [query, ...prev.slice(0, 7)]);
       console.log("----- handleSearch -----");
 
-      await getGifsByQueryAction(query);
+      const gifsResponse = await getGifsByQueryAction(query);
+      setGifs(gifsResponse);
     }
   };
   return (
@@ -50,7 +52,7 @@ export const GifsApp = () => {
         onLabelClick={handleSearchClick}
       />
       {/* Gif results */}
-      <GifList gifs={mockGifs} />
+      <GifList gifs={gifs} />
     </>
   );
 };
